@@ -1,0 +1,7 @@
+{
+    "python.pythonPath": "/Users/naremands/.local/share/virtualenvs/Sql-Alchemy-Hw_-W5Zf1K0_/bin/python",
+    "python.linting.pylintEnabled": false,
+    "python.linting.mypyEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": false
+}
