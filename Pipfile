@@ -15,6 +15,7 @@ numpy = "*"
 matplotlib = "*"
 ipykernel = "*"
 flask = "*"
+nb-black = "*"
 
 [requires]
 python_version =  "3.7"
