@@ -15,6 +15,7 @@ numpy = "*"
 matplotlib = "*"
 ipykernel = "*"
 flask = "*"
+flask-sqlalchemy = "*"
 nb-black = "*"
 
 [requires]
