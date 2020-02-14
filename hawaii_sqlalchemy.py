@@ -1,6 +1,6 @@
-import os 
+import os
 from pprint import pprint
-from sqlalchemy import create_engine ,inspect 
+from sqlalchemy import create_engine, inspect
 
 
 db_path = os.path.join("Resources", "hawaii.sqlite")

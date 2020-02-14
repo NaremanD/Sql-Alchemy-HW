@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 black = "*"
+pylint = "<2.0.0"
 mypy = "*"
 
 [packages]
