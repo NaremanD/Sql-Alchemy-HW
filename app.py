@@ -6,7 +6,7 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func, inspect
 from flask import Flask, jsonify
-from pprint import pprint
+
 
 # database Setup
 engine = create_engine(
@@ -31,7 +31,7 @@ Measurement = Base.classes.measurement
 Station = Base.classes.station
 
 # Flask Setup
-app = Flask(__name__) # the name of the file & the object(double usage)
+app = Flask(__name__)  # the name of the file & the object(double usage)
 
 # Flask Routes
 
@@ -43,10 +43,15 @@ def home():
         f"Welcome to the Climate API!<br/>"
         f"Available Routes:<br/>"
         f"/api/v1.0/precipitation<br/>"
+        f"- Dates and Temperature Observations from last year<br/>"
         f"/api/v1.0/stations<br/>"
+        f"- List of weather stations from the dataset<br/>"
         f"/api/v1.0/tobs<br/>"
+        f"- List of temperature observations (tobs) from the previous year<br/>"
         f"/api/v1.0/&lt;start&gt;<br/>"
+        f"- List of min, avg, and max temperature for a given start date<br/>"
         f"/api/v1.0/&lt;start&gt;/&lt;end&gt;"
+        f"- List of min, avg, and max temperature for a given start/end range<br/>"
     )
 
 
@@ -67,12 +72,12 @@ def precipitation():
         .order_by(Measurement.date)
         .all()
     )
-    all_prcp =[]
+    all_prcp = []
     for score in prec_scores:
-       prcp_dict = {}
-       prcp_dict ["date"] = score[0]
-       prcp_dict ["prcp"] = score[1]
-       all_prcp.append(prcp_dict)
+        prcp_dict = {}
+        prcp_dict["date"] = score[0]
+        prcp_dict["prcp"] = score[1]
+        all_prcp.append(prcp_dict)
     return jsonify(all_prcp)
 
 
@@ -80,7 +85,9 @@ def precipitation():
 def stations():
     """ Return a JSON list of stations from the dataset"""
     all_station = session.query(Measurement.station).group_by(Measurement.station).all()
-    station_list = list(np.ravel(all_station))#ravel(returns contiguous flattened array)
+    station_list = list(
+        np.ravel(all_station)
+    )  # ravel(returns contiguous flattened array)
     print("Statioins list:")
     return jsonify(station_list)
 
@@ -98,12 +105,12 @@ def tobs():
     temp_obs = (
         session.query(Measurement.date, Measurement.tobs)
         .filter(Measurement.date >= date_year_ago)
-        .order_by(Measurement.date)
+        .group_by(Measurement.date)
         .all()
     )
-    all_tobs =[]
+    all_tobs = []
     for tob in temp_obs:
-        tobs_dict ={}
+        tobs_dict = {}
         tobs_dict["date"] = tob[0]
         tobs_dict["tobs"] = tob[1]
         all_tobs.append(tobs_dict)
@@ -126,7 +133,7 @@ def calc_temp_start(start):
         session.query(*select).filter(Measurement.date >= start_date).all()
     )
     print("Calculated temp for the start date")
-
+    temps_start = list(np.ravel(temp_result_start))
     return jsonify(temp_result_start)
 
 
@@ -148,8 +155,9 @@ def calc_temp_start_end(start, end):
     )
 
     print("Calculated temp for the start date & end date")
-    all_results = list(np.ravel(temp_result_start_end ))
-    return jsonify(all_results)
+    temps_end = list(np.ravel(temp_result_start_end))
+    return jsonify(temps_end)
+
 
 if __name__ == "__main__":
-    app.run(debug=True)   
+    app.run(debug=True)
